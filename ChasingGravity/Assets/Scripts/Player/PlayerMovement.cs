@@ -4,11 +4,12 @@ using UnityEngine;
 
 
 [AddComponentMenu("Scripts/Player/PlayerMovement")]
-[RequireComponent(typeof(CharacterController))]
+//[RequireComponent(typeof(CharacterController))]
 [SelectionBase]
 public class PlayerMovement : MonoBehaviour
 {
     private CharacterController controller;
+    private Rigidbody rB;
 
     private Vector3 respawnPos;
     private Quaternion respawnRot;
@@ -16,7 +17,8 @@ public class PlayerMovement : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        controller = GetComponent<CharacterController>();
+        controller = null; //GetComponent<CharacterController>();
+        rB = GetComponent<Rigidbody>();
 
         SetRespawn();
     }
@@ -51,34 +53,50 @@ public class PlayerMovement : MonoBehaviour
         switch (type)
         {
             case 0:
-                PushForward(speed);
+                Push(speed);
                 break;
             case 1:
-                PushBackward(speed);
+                Push(-speed);
                 break;
             default:
                 break;
         }
     }
 
-    private void PushForward(int speed)
+    private void Push1(int speed)
     {
-        if (controller != null)
+        if (controller != null && rB == null)
         {
+            Debug.Log("Using Character Controler movement");
             controller.Move(transform.GetChild(0).forward * speed * .01f);
         }
+        else if (controller == null && rB != null)
+        {
+            Debug.Log("Using Rigidbody movement");
+            rB.MovePosition(transform.GetChild(0).forward * speed );
+        }
+        else if (controller == null && rB == null)
+            Debug.LogWarning("Character Controller and Rigidbody is missing");
         else
-            Debug.LogWarning("Character Controller is missing");
+            Debug.LogWarning("Character Controller and Rigidbody are on");
     }
 
-    private void PushBackward(int speed)
+    private void Push(int speed)
     {
-        if (controller != null)
+        if (rB != null)
         {
-            controller.Move(-transform.GetChild(0).forward * speed * .01f);
+            Vector3 newPos = transform.position;
+
+            newPos = transform.position + (transform.GetChild(0).forward * speed * 0.1f);
+
+            RaycastHit hitInfo;
+            if (Physics.SphereCast(transform.position, 2, new Vector3(0, 1, 0), out hitInfo, 2, 6))
+                newPos = transform.position;
+
+            rB.MovePosition(newPos);
         }
         else
-            Debug.LogWarning("Character Controller is missing");
+            Debug.LogWarning("Character Controller and Rigidbody is missing");
     }
 
 
@@ -93,9 +111,10 @@ public class PlayerMovement : MonoBehaviour
 
     private void Respawn()
     {
-        controller.enabled = false;
+        //controller.enabled = false;
         transform.position = respawnPos;
         transform.rotation = respawnRot;
-        controller.enabled = true;
+        //controller.enabled = true;
+        //controller.enabled = true;
     }
 }
