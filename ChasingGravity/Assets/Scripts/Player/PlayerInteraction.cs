@@ -17,6 +17,12 @@ public class PlayerInteraction : MonoBehaviour
     private RaycastHit oldHitInfo;
     private bool repeat = false;
 
+    private bool holdingObject = false;
+
+    [Header("Debug")]
+    [Tooltip("If we are debugging the ray cast for interactions or not"), SerializeField]
+    private bool rayCastDebugging;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -29,6 +35,11 @@ public class PlayerInteraction : MonoBehaviour
     void Update()
     {
         Interact();
+    }
+
+    public bool HoldingObject()
+    {
+        return holdingObject;
     }
 
     private GameObject[] CollectObjects()
@@ -54,7 +65,6 @@ public class PlayerInteraction : MonoBehaviour
     private void Interact()
     {
         Camera mainCamera = transform.GetChild(0).GetComponent<Camera>();
-
         rayCast = mainCamera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f));
 
         if (Physics.Raycast(rayCast, out hitInfo, distance + 2))
@@ -70,6 +80,7 @@ public class PlayerInteraction : MonoBehaviour
                         if (Input.GetKeyDown(KeyCode.E))
                         {
                             PickedUpObject(objectScript.ObjectGrabbed());
+                            holdingObject = true;
                         }
                     }
                     else
@@ -105,6 +116,22 @@ public class PlayerInteraction : MonoBehaviour
 
         Debug.LogWarning("object not found in objectList. Can not see object being grabbed");
         return false;
+    }
+
+
+    private void OnDrawGizmos()
+    {
+        // Shows when debug is turned on and cursor isn't visible
+        if (rayCastDebugging && !Cursor.visible)
+        {
+            Debug.Log("Ray hit: " + hitInfo.collider);
+
+            Gizmos.color = Color.red; // pick color
+            Gizmos.DrawLine(rayCast.origin, hitInfo.point); // draws the ray cast
+            Gizmos.DrawRay(rayCast.origin, rayCast.direction);
+        }
+        else
+            return;
     }
 
 }

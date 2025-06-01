@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 [AddComponentMenu("Scripts/Managers/GameManager")]
 public class GameManager : MonoBehaviour
@@ -55,6 +56,15 @@ public class GameManager : MonoBehaviour
     {
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
+    }
+
+
+    //----------------------------------------------------------------------------------------------------------------------
+    // Player lost
+
+    public void ResetArea()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
     //----------------------------------------------------------------------------------------------------------------------

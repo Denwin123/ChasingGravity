@@ -8,7 +8,6 @@ using UnityEngine;
 [SelectionBase]
 public class PlayerMovement : MonoBehaviour
 {
-    private CharacterController controller;
     private Rigidbody rB;
 
     private Vector3 respawnPos;
@@ -17,7 +16,6 @@ public class PlayerMovement : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        controller = null; //GetComponent<CharacterController>();
         rB = GetComponent<Rigidbody>();
 
         SetRespawn();
@@ -63,24 +61,6 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    private void Push1(int speed)
-    {
-        if (controller != null && rB == null)
-        {
-            Debug.Log("Using Character Controler movement");
-            controller.Move(transform.GetChild(0).forward * speed * .01f);
-        }
-        else if (controller == null && rB != null)
-        {
-            Debug.Log("Using Rigidbody movement");
-            rB.MovePosition(transform.GetChild(0).forward * speed );
-        }
-        else if (controller == null && rB == null)
-            Debug.LogWarning("Character Controller and Rigidbody is missing");
-        else
-            Debug.LogWarning("Character Controller and Rigidbody are on");
-    }
-
     private void Push(int speed)
     {
         if (rB != null)
@@ -111,10 +91,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void Respawn()
     {
-        //controller.enabled = false;
         transform.position = respawnPos;
         transform.rotation = respawnRot;
-        //controller.enabled = true;
-        //controller.enabled = true;
     }
 }
