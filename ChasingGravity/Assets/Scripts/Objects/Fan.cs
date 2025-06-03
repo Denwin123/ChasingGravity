@@ -24,7 +24,7 @@ public class Fan : MonoBehaviour
     {
         if (beingUsed)
         {
-            if (Input.GetKey(KeyCode.Mouse0))
+            if (Input.GetKey(KeyCode.Mouse1))
             {
                 PM.PushPlayer(-3);
             }

@@ -34,15 +34,15 @@ public class PlayerMovement : MonoBehaviour
     {
         if (!Cursor.visible)
         {
-            /*if (Input.GetKey(KeyCode.Mouse0))
+            if (Input.GetKey(KeyCode.W))
             {
                 Movement(0, 3);
             }
 
-            if (Input.GetKey(KeyCode.Mouse1))
+            if (Input.GetKey(KeyCode.S))
             {
                 Movement(1, 3);
-            }*/
+            }
 
             rB.velocity -= rB.velocity * 0.005f;
         }

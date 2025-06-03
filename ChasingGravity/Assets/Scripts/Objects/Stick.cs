@@ -4,10 +4,14 @@ using UnityEngine;
 
 public class Stick : MonoBehaviour
 {
-    Rigidbody RB;
+    private Rigidbody RB;
+    private GameObject Player;
+    private BoxCollider stickCollider;
 
     private bool beingUsed;
     private bool extending = true;
+
+    private int amountOfHits = 6;
 
     private void Awake()
     {
@@ -18,6 +22,14 @@ public class Stick : MonoBehaviour
     void Start()
     {
         RB = transform.GetComponent<Rigidbody>();
+        Player = transform.parent.parent.parent.parent.gameObject;
+        stickCollider = Player.GetComponent<BoxCollider>();
+
+        if (stickCollider != null)
+        {
+            stickCollider.size = transform.localScale;
+            stickCollider.center = transform.position;
+        }
     }
 
     // Update is called once per frame
@@ -42,9 +54,12 @@ public class Stick : MonoBehaviour
         
         if (transform.localPosition.z < 1.6)
         {
-            Debug.Log("Extending");
             newPos = new Vector3(newPos.x, newPos.y, newPos.z + .02f);
             transform.localPosition = newPos;
+            if (stickCollider != null)
+            {
+                stickCollider.center = newPos;
+            }
         }
     }
 
@@ -54,9 +69,23 @@ public class Stick : MonoBehaviour
         
         if (transform.localPosition.z > 0.0)
         {
-            Debug.Log("Retracting");
             newPos = new Vector3(newPos.x, newPos.y, newPos.z - .02f);
             transform.localPosition = newPos;
+
+            if (stickCollider != null)
+            {
+                stickCollider.center = newPos;
+            }
+        }
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        amountOfHits -= 1;
+
+        if (amountOfHits == 0)
+        {
+            Destroy(gameObject);
         }
     }
 }
