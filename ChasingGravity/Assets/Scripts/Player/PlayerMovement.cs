@@ -24,9 +24,17 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (transform.position.y < -10)
+        {
+            Respawn();
+        }
+    }
+
+    private void FixedUpdate()
+    {
         if (!Cursor.visible)
         {
-            if (Input.GetKey(KeyCode.Mouse0))
+            /*if (Input.GetKey(KeyCode.Mouse0))
             {
                 Movement(0, 3);
             }
@@ -34,12 +42,9 @@ public class PlayerMovement : MonoBehaviour
             if (Input.GetKey(KeyCode.Mouse1))
             {
                 Movement(1, 3);
-            }
-        }
+            }*/
 
-        if (transform.position.y < -10)
-        {
-            Respawn();
+            rB.velocity -= rB.velocity * 0.005f;
         }
     }
 
@@ -61,19 +66,17 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    public void PushPlayer(int speed)
+    {
+        Push(speed);
+    }
+
     private void Push(int speed)
     {
         if (rB != null)
         {
-            Vector3 newPos = transform.position;
-
-            newPos = transform.position + (transform.GetChild(0).forward * speed * 0.1f);
-
-            RaycastHit hitInfo;
-            if (Physics.SphereCast(transform.position, 2, new Vector3(0, 1, 0), out hitInfo, 2, 6))
-                newPos = transform.position;
-
-            rB.MovePosition(newPos);
+            Vector3 newForce = transform.GetChild(0).forward * speed * Time.fixedDeltaTime;
+            rB.AddForce(newForce, ForceMode.VelocityChange);
         }
         else
             Debug.LogWarning("Character Controller and Rigidbody is missing");
@@ -93,5 +96,13 @@ public class PlayerMovement : MonoBehaviour
     {
         transform.position = respawnPos;
         transform.rotation = respawnRot;
+        rB.velocity = new Vector3(0, 0, 0);
+    }
+
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        //if (collision.gameObject.layer == 6)
+            //rB.velocity *= -1f;
     }
 }

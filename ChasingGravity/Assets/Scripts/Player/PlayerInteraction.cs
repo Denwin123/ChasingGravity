@@ -44,7 +44,7 @@ public class PlayerInteraction : MonoBehaviour
 
     private GameObject[] CollectObjects()
     {
-        Transform ObjectsHolder = transform.GetChild(1);
+        Transform ObjectsHolder = transform.GetChild(0).GetChild(0).GetChild(0);
 
         if (ObjectsHolder.childCount <= 0)
         {

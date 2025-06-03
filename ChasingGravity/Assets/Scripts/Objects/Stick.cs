@@ -4,7 +4,10 @@ using UnityEngine;
 
 public class Stick : MonoBehaviour
 {
+    Rigidbody RB;
+
     private bool beingUsed;
+    private bool extending = true;
 
     private void Awake()
     {
@@ -14,15 +17,15 @@ public class Stick : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        RB = transform.GetComponent<Rigidbody>();
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         if (beingUsed)
         {
-            if (Input.GetKey(KeyCode.Space))
+            if (Input.GetKey(KeyCode.Mouse0))
             {
                 Extend();
             }
@@ -35,11 +38,25 @@ public class Stick : MonoBehaviour
 
     private void Extend()
     {
-        Debug.Log("Extending");
+        Vector3 newPos = transform.localPosition;
+        
+        if (transform.localPosition.z < 1.6)
+        {
+            Debug.Log("Extending");
+            newPos = new Vector3(newPos.x, newPos.y, newPos.z + .02f);
+            transform.localPosition = newPos;
+        }
     }
 
     private void Retract()
     {
-        Debug.Log("Retending");
+        Vector3 newPos = transform.localPosition;
+        
+        if (transform.localPosition.z > 0.0)
+        {
+            Debug.Log("Retracting");
+            newPos = new Vector3(newPos.x, newPos.y, newPos.z - .02f);
+            transform.localPosition = newPos;
+        }
     }
 }
